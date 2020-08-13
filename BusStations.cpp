@@ -6,12 +6,19 @@
 
 using namespace std;
 
-void PrintResult() {};
+map<vector<string>, string> reverseMap(const map<string, vector<string>>& m) {
+    map<vector<string>, string> reversedMap;
+    for (auto item : m) {
+        reversedMap[item.second] = item.first;
+    }
+    return reversedMap;
+};
 
 int main() {
     map<string, vector<string>> buses;
+    map<vector<string>, string> reversedBuses;
     vector<string> result;
-    string busesForStop;
+    string resultString;
 
     // Инициализация и ввод количества команд
     int requestQuantity;
@@ -20,8 +27,10 @@ int main() {
     // Ввод списка команд
     for (int i = 0; i < requestQuantity; ++i) {
         string commandName;
-        cin >> commandName;        
+        cin >> commandName;  
+
         // Перебор и анализ вводимых команд
+
         // Описание действий при вводе команды "NEW_BUS"
         if (commandName == "NEW_BUS") {
             string busNumber;
@@ -33,31 +42,54 @@ int main() {
                 cin >> busStation;
             }
             buses[busNumber] = busStations;
+
         // Описание действий при вводе команды "BUSES_FOR_STOP" 
         } else if (commandName == "BUSES_FOR_STOP") {
             string stopName;
             cin >> stopName;    
-            for (auto item : buses) {                
+            for (auto& item : buses) {                
                 int stopQuantity = count(begin(item.second), end(item.second), stopName);
                 if (stopQuantity > 0) {
-                    busesForStop += item.first + " ";
+                    resultString += item.first + " ";
                 } 
             }
-            if (busesForStop.size()) {
-                result.push_back(busesForStop);
+            if (resultString.size()) {
+                result.push_back(resultString);
             } else {
                 result.push_back("No stop");
             }
-            busesForStop.clear();
+            resultString.clear();
+
         // Описание действий при вводе команды "STOPS_FOR_BUS"
         } else if (commandName == "STOPS_FOR_BUS") {
-            //
+            string busName;
+            cin >> busName;
+            reversedBuses = reverseMap(buses);
+            for (auto& item : buses) {
+                if (busName == item.first) {
+                    for (auto& item : item.second) {
+                        string stop, stopName, busNumbers;
+                        stop = item;
+                        stopName = "Stop " + item + ": ";
+                        // Цикл работает не корректно 
+                        for (auto& item : reversedBuses) {
+                            for (int i = 0; i < item.first.size(); ++i) {
+                                if ((item.first[i] == stop) && (i != 0)) {
+                                    busNumbers += item.second + " ";
+                                }
+                            }
+                        }
+                        result.push_back(stopName + busNumbers);
+                    }
+                }
+            }
+
         // Описание действий при вводе команды "ALL_BUSES"        
         } else if (commandName == "ALL_BUSES") {
             if (buses.size() == 0) {
                 result.push_back("No buses");
             } else {                
-                for (auto item : buses) {                    
+                for (auto& item : buses) {                    
                     string busNumber, busStations;
                     busNumber = "Bus " + item.first + ": " + to_string(item.second.size()) + " ";
                     for (int i = 0; i < item.second.size(); ++i) {
@@ -68,8 +100,9 @@ int main() {
             }
         }
     }
+
     // Вывод ответов базы данных   
-    for (auto item : result) {
+    for (auto& item : result) {
         cout << item << endl;
     }
 
