@@ -2,13 +2,12 @@
 #include <algorithm>
 #include <vector>
 #include <map>
-#include <set>
 #include <string>
 
 using namespace std;
 
 int main() {
-    map<set<string>, int> buses;    
+    map<vector<string>, int> buses;    
     vector<string> result;
 
     // Инициализация и ввод количества команд
@@ -20,11 +19,11 @@ int main() {
         int stopQuantity;
         cin >> stopQuantity; 
 
-        set<string> stops;
+        vector<string> stops;
         string stopName;
         for (int i = 0; i < stopQuantity; ++i) {
             cin >> stopName;
-            stops.insert(stopName);
+            stops.push_back(stopName);
         }
         
         int busNumber = buses.size() + 1;
