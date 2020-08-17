@@ -6,6 +6,7 @@
 
 using namespace std;
 
+/*
 map<vector<string>, string> reverseMap(const map<string, vector<string>>& m) {
     map<vector<string>, string> reversedMap;
     for (auto item : m) {
@@ -13,6 +14,7 @@ map<vector<string>, string> reverseMap(const map<string, vector<string>>& m) {
     }
     return reversedMap;
 };
+*/
 
 int main() {
     map<string, vector<string>> buses;
@@ -64,26 +66,22 @@ int main() {
         } else if (commandName == "STOPS_FOR_BUS") {
             string busName;
             cin >> busName;
-            reversedBuses = reverseMap(buses);
+            // reversedBuses = reverseMap(buses);
             for (auto& item : buses) {
                 if (busName == item.first) {
                     for (auto& item : item.second) {
                         string stop, stopName, busNumbers;
                         stop = item;
                         stopName = "Stop " + item + ": ";
-                        // Цикл работает не корректно 
-                        for (auto& item : reversedBuses) {
-                            for (int i = 0; i < item.first.size(); ++i) {
-                                if ((item.first[i] == stop) && (i != 0)) {
-                                    busNumbers += item.second + " ";
-                                }
-                            }
-                        }
+                        for (auto& item : buses) {
+                            if (count(begin(item.second), end(item.second), stop) && (item.second[0] != stop)) {
+                                busNumbers += item.first + " ";
+                            } 
                         result.push_back(stopName + busNumbers);
                     }
                 }
             }
-
+        }
         // Описание действий при вводе команды "ALL_BUSES"        
         } else if (commandName == "ALL_BUSES") {
             if (buses.size() == 0) {
