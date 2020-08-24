@@ -7,10 +7,11 @@
 using namespace std;
 
 int main() {
-    map<string, vector<string>> buses;
-    map<vector<string>, string> reversedBuses;
-    vector<string> result;
-    string resultString;
+    map<string, vector<string>> busesRoutes;
+    map<int, string> busesNumbers;
+    map<int, vector<string>> busesStations;
+    int busesCounter = 0;
+    vector<string> result;    
 
     // Инициализация и ввод количества команд
     int requestQuantity;
@@ -22,9 +23,10 @@ int main() {
         cin >> commandName;  
 
         // Перебор и анализ вводимых команд
-
+        
         // Описание действий при вводе команды "NEW_BUS"
         if (commandName == "NEW_BUS") {
+            busesCounter++;
             string busNumber;
             cin >> busNumber;
             int busStationsNumber;
@@ -32,17 +34,24 @@ int main() {
             vector<string> busStations(busStationsNumber);
             for (string& busStation : busStations) {
                 cin >> busStation;
-            }
-            buses[busNumber] = busStations;
+            }            
+            busesNumbers[busesCounter] = busNumber;
+            busesStations[busesCounter] = busStations;
+            busesRoutes[busNumber] = busStations;
 
         // Описание действий при вводе команды "BUSES_FOR_STOP" 
         } else if (commandName == "BUSES_FOR_STOP") {
             string stopName;
-            cin >> stopName;    
-            for (const auto& item : buses) {                
-                int stopQuantity = count(begin(item.second), end(item.second), stopName);
-                if (stopQuantity > 0) {
-                    resultString += item.first + " ";
+            cin >> stopName; 
+            string resultString;   
+            for (const auto& item : busesStations) {  
+                if (count(begin(item.second), end(item.second), stopName)) {
+                    int busCounter = item.first;
+                    for (const auto& item : busesNumbers) {
+                        if (item.first == busCounter) {
+                            resultString += item.second + " ";
+                        }
+                    }
                 } 
             }
             if (resultString.size()) {
@@ -56,24 +65,30 @@ int main() {
         } else if (commandName == "STOPS_FOR_BUS") {
             string busName;
             cin >> busName;
-            if ((buses.size() == 0) || (buses.count(busName)) == 0) {
+            if ((busesRoutes.size() == 0) || (busesRoutes.count(busName)) == 0) {
                 result.push_back("No bus");
             } else {
-                for (const auto& item : buses) {
-                    if (busName == item.first) {
-                        for (auto& item : item.second) {
+                for (const auto& item : busesRoutes) {
+                    if (busName == item.first) {                        
+                        for (auto& item : item.second) {                            
                             string stop, stopName, busNumbers;
-                            int busCount = 0;
+                            int busCounter = 0;
+                            int counter = 0;
                             stop = item;
                             stopName = "Stop " + stop + ": ";                            
-                            for (const auto& item : buses) {                                
-                                if ((item.first != busName) && 
-                                    (count(begin(item.second), end(item.second), stop))) {
-                                        busNumbers += item.first + " ";
-                                        busCount++;
-                                } 
+                            for (const auto& item : busesStations) {
+                                if (count(begin(item.second), end(item.second), stop)) {
+                                    busCounter = item.first;
+                                    for (const auto& item : busesNumbers) {
+                                        if ((item.first == busCounter) && 
+                                        (item.second != busName)) {
+                                            busNumbers += item.second + " ";
+                                            counter++;
+                                        }
+                                    }
+                                }
                             }
-                            if (busCount == 0) {
+                            if (counter == 0) {
                                 busNumbers = "no interchange";
                             }
                             result.push_back(stopName + busNumbers);                            
@@ -83,10 +98,10 @@ int main() {
             }
         // Описание действий при вводе команды "ALL_BUSES"        
         } else if (commandName == "ALL_BUSES") {
-            if (buses.size() == 0) {
+            if (busesRoutes.size() == 0) {
                 result.push_back("No buses");
             } else {                
-                for (const auto& item : buses) {                    
+                for (const auto& item : busesRoutes) {                    
                     string busNumber, busStations;
                     busNumber = "Bus " + item.first + ": ";
                     for (int i = 0; i < item.second.size(); ++i) {
@@ -105,46 +120,3 @@ int main() {
 
     return 0;
 }
-
-/*
-9
-NEW_BUS 32 3 Tolstopaltsevo Marushkino Vnukovo
-NEW_BUS 32K 6 Tolstopaltsevo Marushkino Vnukovo Peredelkino Solntsevo Skolkovo
-NEW_BUS 950 6 Kokoshkino Marushkino Vnukovo Peredelkino Solntsevo Troparyovo
-NEW_BUS 272 4 Vnukovo Moskovsky Rumyantsevo Troparyovo
-STOPS_FOR_BUS 272
-STOPS_FOR_BUS 950
-BUSES_FOR_STOP Marushkino
-BUSES_FOR_STOP Vnukovo
-BUSES_FOR_STOP Solntsevo
-
-Your output:
-Stop Vnukovo: 32 32K 950 
-Stop Moskovsky: no interchange
-Stop Rumyantsevo: no interchange
-Stop Troparyovo: 950 
-Stop Kokoshkino: no interchange
-Stop Marushkino: 32 32K 
-Stop Vnukovo: 272 32 32K 
-Stop Peredelkino: 32K 
-Stop Solntsevo: 32K 
-Stop Troparyovo: 272 
-32 32K 950 
-272 32 32K 950 
-32K 950 
-
-Correct output:
-Stop Vnukovo: 32 32K 950
-Stop Moskovsky: no interchange
-Stop Rumyantsevo: no interchange
-Stop Troparyovo: 950
-Stop Kokoshkino: no interchange
-Stop Marushkino: 32 32K
-Stop Vnukovo: 32 32K 272
-Stop Peredelkino: 32K
-Stop Solntsevo: 32K
-Stop Troparyovo: 272
-32 32K 950
-32 32K 950 272
-32K 950
-*/
