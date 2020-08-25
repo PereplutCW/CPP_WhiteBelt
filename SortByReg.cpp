@@ -1,17 +1,9 @@
 #include <iostream>
 #include <algorithm>
-#include <cmath>
 #include <vector>
 #include <string>
 
 using namespace std;
-
-bool sortByReg(string a, string b) {
-    if (tolower(a) < tolower(b)) {
-        return true;
-    } 
-    return false;
-}
 
 int main() {
     vector<string> strings;
@@ -20,15 +12,22 @@ int main() {
     cin >> quantityNumbers;
 
     for (int i = 0; i < quantityNumbers; ++i) {
-        string str;
+        string str, newStr;
         cin >> str;
+        
         strings.push_back(str);
     }
 
-    sort(begin(strings), end(strings), sortByReg);
+    sort(begin(strings), end(strings), 
+         [](const string& l, const string& r) {
+             return lexicographical_compare(begin(l), end(l), begin(r), end(r), 
+             [](char cl, char cr) {
+                 return tolower(cl) < tolower(cr);
+             });
+         });
 
-    for (const auto& i : strings) {
-        cout << i << ' ';
+    for (const auto& item : strings) {
+        cout << item << ' ';
     }
 
     return 0;

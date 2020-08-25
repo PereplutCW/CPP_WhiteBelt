@@ -1,10 +1,11 @@
 #include <iostream>
 #include <algorithm>
 #include <map>
-#include <vector>
+#include <set>
 #include <string>
 
 using namespace std;
+
 
 class Person {
     public:
@@ -16,12 +17,29 @@ class Person {
     }
     string GetFullName(int year) {
         string currentFirstName, currentLastName;
-        if ((firstNameList.size() == 0) && (lastNameList.size() == 0)) {
-            return "Incognito";
-        } else {
-            // перебрать списки firstNameList и lastNameList
+        for (const auto& item : lastNameList) {
+            if (item.first <= year) {
+                currentLastName = item.second;
+                for (const auto& item : firstNameList) {
+                    if (item.first <= year) {
+                        currentFirstName = item.second;
+                    }
+                }
+            }
         }
-        if (currentFirstName.size() == 0) {
+        for (const auto& item : firstNameList) {
+            if (item.first <= year) {
+                currentFirstName = item.second;
+                for (const auto& item : lastNameList) {
+                    if (item.first <= year) {
+                        currentLastName = item.second;
+                    }
+                }
+            }
+        }        
+        if ((currentFirstName.size() == 0) && (currentLastName.size() == 0)) {
+            return "Incognito";
+        } else if (currentFirstName.size() == 0) {
             return currentLastName + " with unknown first name";
         } else if (currentLastName.size() == 0) {
             return currentFirstName + " with unknown last name";
@@ -35,23 +53,7 @@ class Person {
 };
 
 int main() {
-    Person person;
-  
-    person.ChangeFirstName(1965, "Polina");
-    person.ChangeLastName(1967, "Sergeeva");
-    for (int year : {1900, 1965, 1990}) {
-        cout << person.GetFullName(year) << endl;
-    }
-  
-    person.ChangeFirstName(1970, "Appolinaria");
-    for (int year : {1969, 1970}) {
-        cout << person.GetFullName(year) << endl;
-    }
-  
-    person.ChangeLastName(1968, "Volkova");
-    for (int year : {1969, 1970}) {
-        cout << person.GetFullName(year) << endl;
-    }
-
+    Person person; 
+    
     return 0;
 }
