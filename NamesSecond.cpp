@@ -63,13 +63,15 @@ class Person {
         for (const auto& item : nameList) {
             if (item.first <= year) {
                 name = item.second;
-                if (count(begin(nameHistory), end(nameHistory), item.second) == 0) {
-                    nameHistory.push_back(item.second + ", ");
+                if ((nameHistory.size() == 0) || 
+                    (nameHistory[nameHistory.size() - 1] != item.second)) {
+                    nameHistory.push_back(item.second);
                 }
             } else {
                 break;
             }
         }
+        // nameHistory.pop_back();
         // reverse(nameHistory.begin(), nameHistory.end());
         if (nameHistory.size() > 0) {
             for (const auto& item : nameHistory) {
