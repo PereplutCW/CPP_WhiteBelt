@@ -29,8 +29,8 @@ class FunctionPart {
             operation = '+';
         } else if (operation == '*') {
             operation = '/';
-        } else {
-            operation == '*';
+        } else if (operation == '/') {
+            operation = '*';
         }
     }
 

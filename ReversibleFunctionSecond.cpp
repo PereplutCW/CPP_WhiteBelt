@@ -41,7 +41,7 @@ class FunctionPart {
             operation = '+';
         } else if (operation == '*') {
             operation = '/';
-        } else {
+        } else if (operation == '/') {
             operation == '*';
         }
     }
