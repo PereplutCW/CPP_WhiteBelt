@@ -4,24 +4,53 @@ using namespace std;
 class Rational {
 public:
     Rational() {
-        // Реализуйте конструктор по умолчанию
-        //
+        p = 0;
+        q = 1;
     }
 
     Rational(int numerator, int denominator) {
-        // Реализуйте конструктор
+        if (numerator == 0) {
+            q = 1;
+        } else if ((numerator < 0) && (denominator < 0)) {
+            p = abs(numerator);
+            q = abs(denominator);
+        } else if (((numerator < 0) && (denominator > 0)) || 
+                  ((numerator > 0) && (denominator < 0))) {
+            p = -abs(numerator);
+            q = abs(denominator);
+        } 
+
+        int gcd = GCD(numerator, denominator);
+        numerator = numerator / gcd;
+        denominator = denominator / gcd;
+
+        p = numerator;
+        q = denominator;
     }
 
     int Numerator() const {
-        // Реализуйте этот метод
+        return p;
     }
 
     int Denominator() const {
-        // Реализуйте этот метод
+        return q;
     }
 
 private:
-    // Добавьте поля
+    int p, q;
+
+    int GCD(int a, int b) {
+        int gcd;
+        while (a > 0 && b > 0) {
+            if (a > b) {
+                a = a % b;
+            } else {
+                b = b % a;
+            }
+        }
+        gcd = a + b;
+        return gcd;
+    }
 };
 
 int main() {
