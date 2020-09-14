@@ -19,6 +19,9 @@ public:
     }
 
     Rational(int numerator, int denominator) {
+        if (denominator == 0) {
+            throw invalid_argument("Invalid argument");
+        }
         if (numerator == 0) {
             p = 0;
             q = 1;
@@ -26,17 +29,10 @@ public:
         const int gcd = GCD(numerator, denominator);        
         numerator = numerator / gcd;
         denominator = denominator / gcd;
-        if ((numerator > 0) && (denominator > 0)) {
-            p = numerator;
-            q = denominator;
-        } else if ((numerator < 0) && (denominator < 0)) {
-            p = abs(numerator);
-            q = abs(denominator);
-        } else if (((numerator < 0) && (denominator > 0)) || 
-                   ((numerator > 0) && (denominator < 0))) {
-            p = -abs(numerator);
-            q = abs(denominator);
-        } 
+        if (denominator < 0) {
+            p = -numerator;
+            q = -denominator;
+        }
     }
 
     int Numerator() const {
@@ -51,8 +47,15 @@ private:
     int p, q;    
 };
 
+Rational operator*(const Rational& lhs, const Rational& rhs) {
+    return {lhs.Numerator() * rhs.Numerator(), lhs.Denominator() * rhs.Denominator()};
+}
+
 Rational operator/(const Rational& lhs, const Rational& rhs) {
-    return {lhs.Numerator() * rhs.Denominator(), lhs.Denominator() * rhs.Numerator()};
+    if (rhs.Numerator() == 0) {
+        throw domain_error("Domain error");
+    }
+    return lhs * Rational(rhs.Denominator(), rhs.Numerator());
 }
 
 int main() {
