@@ -1,51 +1,39 @@
 #include <iostream>
+#include <algorithm>
+#include <cstdint>
 #include <tuple>
 #include <utility>
 #include <map>
-#include <set>
+#include <vector>
 
 using namespace std;
 
-struct Date {
-    int year;
-    string month;
-    int day;
+enum class Lang {
+    DE, FR, IT
 };
 
-bool operator<(const Date& lhs, const Date& rhs) {
-        return tie(lhs.year, lhs.month, lhs.day) < 
-               tie(lhs.year, lhs.month, lhs.day);
+struct Region {
+    string std_name;
+    string parent_std_name;
+    map<Lang, string> names;
+    int64_t population;
+};
+
+bool operator<(const Region& lhs, const Region& rhs) {
+    return tie(lhs.std_name, lhs.parent_std_name, lhs.names, lhs.population) < 
+           tie(rhs.std_name, rhs.parent_std_name, rhs.names, rhs.population);
 }
 
-class Cities {
-public:
-    tuple<bool, string> FindCountry(const string& sity) const {
-        if (city_to_country.count(sity)) {
-            return {true, city_to_country.at(sity)};
-        } else if (ambiguous_cities.count(sity)) {
-            return {false, "Ambiguous"};
-        } else {
-            return {false, "Not exist"};
-        }
-    };
-private:
-    map<string, string> city_to_country;
-    set<string> ambiguous_cities;
-};
+int FindMaxRepetitionCount(const vector<Region>& regions) {
+    int result = 0;
+    map<Region, int> repetition_count;
+    for (const Region& region : regions) {
+        result = max(result, ++repetition_count[region]);
+    }
+    return result;
+}
 
-int main() {
-
-    // tuple t(7, "C++", true);
-    // auto t = make_tuple(7, "C++", true);
-
-    // pair p(17, "C++");
-
-    Cities cities;
-    auto [success, message] = cities.FindCountry("Volgograd");
-
-    cout << success << " " << message << endl;
-    // cout << get<1>(p) << endl;
-    // cout << p.first << " " << p.second << endl;
+int main() {    
 
     return 0;
 }
