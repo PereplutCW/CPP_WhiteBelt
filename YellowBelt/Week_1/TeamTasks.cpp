@@ -16,7 +16,7 @@ enum class TaskStatus {
     DONE
 };
 
-// Тип-синним для map<TaskStatus, int>, 
+// Тип-синоним для map<TaskStatus, int>, 
 // позволяющего хранить количество задач каждого статуса
 using TasksInfo = map<TaskStatus, int>;
 
@@ -28,6 +28,8 @@ public:
     void AddNewTask(const string& person) {};
     // Обновление статусов по данному количеству задач конкретного разработчика
     tuple<TasksInfo, TasksInfo> PerformPersonTasks(const string& person, int task_count) {};
+private:
+    map<string, vector<TaskStatus>> person_tasks;
 };
 
 void PrintTasksInfo(TasksInfo task_info) {
@@ -66,6 +68,15 @@ int main() {
 
     return 0;
 }
+
+/*
+Ilia's tasks: 1 new tasks, 0 tasks in progress, 0 tasks are being tested, 0 tasks are done
+Ivan's tasks: 3 new tasks, 0 tasks in progress, 0 tasks are being tested, 0 tasks are done
+Updated Ivan's tasks: 0 new tasks, 2 tasks in progress, 0 tasks are being tested, 0 tasks are done
+Untouched Ivan's tasks: 1 new tasks, 0 tasks in progress, 0 tasks are being tested, 0 tasks are done
+Updated Ivan's tasks: 0 new tasks, 1 tasks in progress, 1 tasks are being tested, 0 tasks are done
+Untouched Ivan's tasks: 0 new tasks, 1 tasks in progress, 0 tasks are being tested, 0 tasks are done
+*/
 
 /*
 Метод PerformPersonTasks должен реализовывать следующий алгоритм:
