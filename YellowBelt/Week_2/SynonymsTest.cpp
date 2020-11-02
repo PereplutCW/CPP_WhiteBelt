@@ -1,18 +1,22 @@
 #include <iostream>
+#include <sstream>
 #include <algorithm>
 #include <map>
 #include <set>
 #include <string>
 #include <cassert>
+#include <exception>
 
 using namespace std;
+
+// Создание типа-синонима Vocabulary для map<string, set<string>>
 
 using Vocabulary = map<string, set<string>>;
 
 void AddSynonyms(Vocabulary& vocabulary, 
                  const string& word1, const string& word2) {
     vocabulary[word1].insert(word2);
-    vocabulary[word2].insert(word1);
+    vocabulary[word2].insert(word2);
 }
 
 size_t GetSynonymCount(Vocabulary& vocabulary, const string& word) {
@@ -21,8 +25,59 @@ size_t GetSynonymCount(Vocabulary& vocabulary, const string& word) {
 
 bool AreSynonyms(Vocabulary& vocabulary, 
                  const string& word1, const string& word2) {
-    return (vocabulary.count(word1)) && (vocabulary[word1].count(word2));
+    return vocabulary[word1].count(word2) == 0;
 }
+
+// Переопределение оператора << для типа set<T>
+
+template <typename T>
+ostream& operator<<(ostream& os, const set<T>& s) {
+    os << "{";
+    bool first = true;
+    for (const auto& v : s) {
+        if (!first) {
+            os << ", ";
+        }
+        first = false;
+        os << v;
+    }
+    return os << "}";
+}
+
+// Переопределение оператора << для типа map<K, V>
+
+template <typename K, typename V>
+ostream& operator<<(ostream& os, const map<K, V>& m) {
+    os << "{";
+    bool first = true;
+    for (const auto& kv : m) {
+        if (!first) {
+            os << ", ";
+        }
+        first = false;
+        os << kv.first << " : " << kv.second;
+    }
+    return os << "}";
+}
+
+// Определение и реализация функций AssertEqual и Assert для замены assert 
+// в юнит-тестах
+
+template <typename T, typename U>
+void AssertEqual(const T& t, const U& u, const string& hint) {
+    if (t != u) {
+        ostringstream os;
+        os << "Assertion failed: " << t << "!=" << u <<
+        " Hint: " << hint;
+        throw runtime_error(os.str());
+    }
+}
+
+void Assert(bool b, const string& hint) {
+    AssertEqual(b, true, hint);
+}
+
+// Определение и реализация юнит-теста для функции AddSynonyms
 
 void TestAddSynonyms() {
     {
@@ -32,7 +87,7 @@ void TestAddSynonyms() {
             {"a", {"b"}},
             {"b", {"a"}}
         };
-        assert(empty == expected);
+        AssertEqual(empty, expected, "Add to empty");
     }
     {
         Vocabulary vocabulary = {
@@ -46,18 +101,71 @@ void TestAddSynonyms() {
             {"b", {"a", "c"}},
             {"c", {"b", "a"}}
         };
-        assert(vocabulary == expected);
+        AssertEqual(vocabulary, expected, "Add to vocabulary");
     }
     cout << "TestAddSynonyms OK!" << endl;
 }
 
-void TestAll() {
-    TestAddSynonyms();
+// Определение и реализация юнит-теста для функции TestCount
+
+void TestCount() {
+    {
+        Vocabulary empty;
+        AssertEqual(GetSynonymCount(empty, "a"), 0u, "count for empty");
+    }
+    {
+        Vocabulary vocabulary = {
+            {"a", {"b", "c"}},
+            {"b", {"a"}},
+            {"c", {"a"}}
+        };
+        AssertEqual(GetSynonymCount(vocabulary, "a"), 2u, "count for a");
+        AssertEqual(GetSynonymCount(vocabulary, "b"), 1u, "count for b");
+        AssertEqual(GetSynonymCount(vocabulary, "z"), 0u, "count for z");
+    }
+    cout << "TestCount OK!" << endl;
+}
+
+// Определение и реализация юнит-теста для функции TestAreSynonyms
+
+void TestAreSynonyms() {
+    {
+        Vocabulary empty;
+        Assert(!AreSynonyms(empty, "a", "b"), "empty a b");
+        Assert(!AreSynonyms(empty, "b", "a"), "empty b a");
+    }
+    {
+        Vocabulary vocabulary = {
+            {"a", {"b", "c"}},
+            {"b", {"a"}},
+            {"c", {"a"}}
+        };
+        Assert(AreSynonyms(vocabulary, "a", "b"), "vocabulary a b");
+        Assert(AreSynonyms(vocabulary, "b", "a"), "vocabulary b a");
+        Assert(AreSynonyms(vocabulary, "a", "c"), "vocabulary a c");
+        Assert(AreSynonyms(vocabulary, "c", "a"), "vocabulary c a");
+        Assert(AreSynonyms(vocabulary, "b", "c"), "vocabulary b c");
+    }
+}
+
+// Определение и реализация функции TestFunc для вызова любого юнит-теста
+
+template <typename TestFunc>
+void RunTest(TestFunc func, const string& test_name) {
+    try {
+        func();
+    } catch (runtime_error& e) {
+        cout << test_name << ": " << e.what() << endl;
+    }
 }
 
 int main() {
-    // TestAll();
-    // return 0;
+    RunTest(TestAddSynonyms, "TestAddSynonyms");
+    RunTest(TestCount, "TestCount");
+    RunTest(TestAreSynonyms, "TestAreSynonyms");
+    return 0;
+
+    /*
 
     map<string, set<string>> vocabulary;
 
@@ -92,4 +200,6 @@ int main() {
     }
 
     return 0;
+
+    */
 }
