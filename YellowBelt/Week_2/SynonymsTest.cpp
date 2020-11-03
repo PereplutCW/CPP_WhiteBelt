@@ -16,7 +16,7 @@ using Vocabulary = map<string, set<string>>;
 void AddSynonyms(Vocabulary& vocabulary, 
                  const string& word1, const string& word2) {
     vocabulary[word1].insert(word2);
-    vocabulary[word2].insert(word2);
+    vocabulary[word2].insert(word1);
 }
 
 size_t GetSynonymCount(Vocabulary& vocabulary, const string& word) {
@@ -103,7 +103,6 @@ void TestAddSynonyms() {
         };
         AssertEqual(vocabulary, expected, "Add to vocabulary");
     }
-    cout << "TestAddSynonyms OK!" << endl;
 }
 
 // Определение и реализация юнит-теста для функции TestCount
@@ -123,7 +122,6 @@ void TestCount() {
         AssertEqual(GetSynonymCount(vocabulary, "b"), 1u, "count for b");
         AssertEqual(GetSynonymCount(vocabulary, "z"), 0u, "count for z");
     }
-    cout << "TestCount OK!" << endl;
 }
 
 // Определение и реализация юнит-теста для функции TestAreSynonyms
@@ -144,28 +142,43 @@ void TestAreSynonyms() {
         Assert(AreSynonyms(vocabulary, "b", "a"), "vocabulary b a");
         Assert(AreSynonyms(vocabulary, "a", "c"), "vocabulary a c");
         Assert(AreSynonyms(vocabulary, "c", "a"), "vocabulary c a");
-        Assert(AreSynonyms(vocabulary, "b", "c"), "vocabulary b c");
+        // Assert(AreSynonyms(vocabulary, "b", "c"), "vocabulary b c");
     }
 }
 
 // Определение и реализация функции TestFunc для вызова любого юнит-теста
 
-template <typename TestFunc>
-void RunTest(TestFunc func, const string& test_name) {
-    try {
-        func();
-    } catch (runtime_error& e) {
-        cout << test_name << ": " << e.what() << endl;
+class TestRunner {
+public:
+    template <typename TestFunc>
+    void RunTest(TestFunc func, const string& test_name) {
+        try {
+            func();
+            cerr << test_name << ": OK!" << endl;
+        } catch (runtime_error& e) {
+            ++fail_count;
+            cerr << test_name << ": " << e.what() << endl;
+        }
     }
+    ~TestRunner() {
+        if (fail_count > 0) {
+            cerr << fail_count << " tests failed. Terminate";
+            exit(1);
+        }
+    }
+private:
+    int fail_count = 0;
+};
+
+void TestAll() {
+    TestRunner tr;
+    tr.RunTest(TestAddSynonyms, "TestAddSynonyms");
+    tr.RunTest(TestCount, "TestCount");
+    tr.RunTest(TestAreSynonyms, "TestAreSynonyms");
 }
 
 int main() {
-    RunTest(TestAddSynonyms, "TestAddSynonyms");
-    RunTest(TestCount, "TestCount");
-    RunTest(TestAreSynonyms, "TestAreSynonyms");
-    return 0;
-
-    /*
+    TestAll();
 
     map<string, set<string>> vocabulary;
 
@@ -200,6 +213,4 @@ int main() {
     }
 
     return 0;
-
-    */
 }
