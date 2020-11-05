@@ -146,8 +146,6 @@ void TestAreSynonyms() {
     }
 }
 
-// Определение и реализация функции TestFunc для вызова любого юнит-теста
-
 class TestRunner {
 public:
     template <typename TestFunc>
