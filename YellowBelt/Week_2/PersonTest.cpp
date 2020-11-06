@@ -138,8 +138,44 @@ class Person {
     map<int, string> lastNameList;
 };
 
+void TestPredefinedLastName() {
+  Person person;
+
+  person.ChangeLastName(1965, "Sergeeva");
+  person.ChangeFirstName(1967, "Polina");
+
+  AssertEqual(person.GetFullName(1964), "Incognito");
+  AssertEqual(person.GetFullName(1966), "Sergeeva with unknown first name");
+  AssertEqual(person.GetFullName(1968), "Polina Sergeeva");
+}
+
+void TestPredefinedFirstName() {
+  Person person;
+  
+  person.ChangeFirstName(1965, "Polina");
+  person.ChangeLastName(1967, "Sergeeva");
+  
+  AssertEqual(person.GetFullName(1964),  "Incognito");
+  AssertEqual(person.GetFullName(1966), "Polina with unknown last name");
+  AssertEqual(person.GetFullName(1968), "Polina Sergeeva");
+
+  person.ChangeFirstName(1967, "Appolinaria");
+
+  AssertEqual(person.GetFullName(1966), "Polina with unknown last name");
+  AssertEqual(person.GetFullName(1968), "Appolinaria Sergeeva");
+  AssertEqual(person.GetFullName(1970), "Appolinaria Sergeeva");
+
+  person.ChangeLastName(1969, "Volkova");
+
+  AssertEqual(person.GetFullName(1968), "Appolinaria Sergeeva");
+  AssertEqual(person.GetFullName(1970), "Appolinaria Volkova");
+  AssertEqual(person.GetFullName(1972), "Appolinaria Volkova");
+}
+
 int main() {
   TestRunner runner;
-  // добавьте сюда свои тесты
+  runner.RunTest(TestPredefinedLastName, "TestPredefinedLastName");
+  runner.RunTest(TestPredefinedFirstName, "TestPredefinedFirstName");
+
   return 0;
 }
