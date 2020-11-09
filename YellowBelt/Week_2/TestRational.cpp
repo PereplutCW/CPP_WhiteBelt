@@ -8,6 +8,8 @@
 
 using namespace std;
 
+// Unit Test Fraimwork
+
 template <class T>
 ostream& operator << (ostream& os, const vector<T>& s) {
   os << "{";
@@ -203,12 +205,79 @@ ostream& operator<<(ostream& stream, const Rational& rational) {
 
 // Реализация набора юнит-тестов для класса Rational
 
+void TestRationalDefault() {
+  Rational rational;
+    AssertEqual(rational.Numerator(), 0,
+                "default numerator must be zero");
+    AssertEqual(rational.Denominator(), 1,
+                "default denominator must be one");
+}
+
+void TestRationalNumeratorZero() {
+  Rational rational = {0, 5};
+    AssertEqual(rational.Numerator(), 0);
+    AssertEqual(rational.Denominator(), 1,
+                "if numerator is zero, denominator must be one");
+}
+
+void TestRationalReduced() {
+  {
+    Rational rational = {5, 10};
+    AssertEqual(rational.Numerator(), 1,
+                "numerator must be reduced to one");
+    AssertEqual(rational.Denominator(), 2,
+                "denominator must be reduced to two");
+  }
+  {
+    Rational rational = {5, 13};
+    AssertEqual(rational.Numerator(), 5,
+                "numerator must be five");
+    AssertEqual(rational.Denominator(), 13,
+                "denominator must be thirteen");
+  }
+}
+
+void TestRationalSameSign() {
+  {
+    Rational rational = {1, 2};
+    AssertEqual(rational.Numerator(), 1,
+                "numerator must be one");
+    AssertEqual(rational.Denominator(), 2,
+                "denominator must be two");
+  }
+  {
+    Rational rational = {-1, -2};
+    AssertEqual(rational.Numerator(), 1,
+                "numerator must be taken modulo and equal to one");
+    AssertEqual(rational.Denominator(), 2,
+                "denominator must be taken modulo and equal to two");
+  }
+}
+
+void TestRationalDifferentSign() {  
+  {
+    Rational rational = {-1, 2};
+    AssertEqual(rational.Numerator(), -1,
+                "numerator must be taken modulo a minus sign and equal to one");
+    AssertEqual(rational.Denominator(), 2,
+                "denominator must be taken modulo and equal to two");
+  }
+  {
+    Rational rational = {1, -2};
+    AssertEqual(rational.Numerator(), -1,
+                "numerator must be taken modulo a minus sign and equal to one");
+    AssertEqual(rational.Denominator(), 2,
+                "denominator must be taken modulo and equal to two");
+  }
+}
+
 int main() {
   TestRunner runner;
-  // добавьте сюда свои тесты
-
-  Rational r = {5, 10};
-  cout << r << endl;
+  runner.RunTest(TestRationalDefault, "TestRationalDefault");
+  runner.RunTest(TestRationalNumeratorZero, "TestRationalNumeratorZero");
+  runner.RunTest(TestRationalReduced, "TestRationalReduced");
+  runner.RunTest(TestRationalSameSign, "TestRationalSameSign");
+  runner.RunTest(TestRationalDifferentSign, "TestRationalDifferentSign");
 
   return 0;
 }
