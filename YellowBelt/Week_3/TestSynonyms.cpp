@@ -1,5 +1,7 @@
 #include "Synonyms.h"
+#include "Synonyms.cpp"
 #include "Tests.h"
+#include "Tests.cpp"
 
 using namespace std;
 
