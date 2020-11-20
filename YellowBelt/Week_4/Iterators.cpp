@@ -1,6 +1,7 @@
 #include <iostream>
 #include <algorithm>
 #include <vector>
+#include <set>
 #include <string>
 
 using namespace std;
@@ -15,14 +16,12 @@ ostream& operator<<(ostream& stream, const Lang& lang) {
     return stream;
 }
 
-using LangIt = vector<Lang>::iterator;
-
 template <typename It>
 void PrintRange(It range_begin, It range_end) {
     for (auto it = range_begin;
         it != range_end;
         ++it) {
-        cout << *it;
+        cout << *it << " ";
     }
 }
 
@@ -35,7 +34,11 @@ int main() {
         {"C#", 17}
     };   
 
-    PrintRange(begin(langs), end(langs));
+    set<string> lang_names = {"C", "C++", "Python", "Java", "C#"};
+
+    auto it = lang_names.find("Python");
+
+    PrintRange(begin(lang_names), it);
 
     /*
     auto result = find_if(
