@@ -8,58 +8,42 @@ using namespace std;
 
 struct Lang {
     string name;
-    int age;
+    string implementation;
 };
 
 ostream& operator<<(ostream& stream, const Lang& lang) {
-    stream << lang.name << " " << lang.age << endl;
+    stream << lang.name << " " << lang.implementation << endl;
     return stream;
 }
 
 template <typename It>
-void PrintRange(It range_begin, It range_end) {
+void PrintRange(It range_begin, It range_end, const string& title) {
+    cout << title;
     for (auto it = range_begin;
         it != range_end;
         ++it) {
-        cout << *it << " ";
+        cout << it->name << " ";
     }
+    cout << endl;
 }
 
 int main() {
     vector<Lang> langs = {
-        {"C", 45},
-        {"C++", 34},
-        {"Python", 26},
-        {"Java", 22},
-        {"C#", 17}
+        {"C/C++", "Compiled"},
+        {"Rust", "Compiled"},
+        {"Python", "Interpreted"},
+        {"JavaScript", "Interpreted"}
     };   
 
-    set<string> lang_names = {"C", "C++", "Python", "Java", "C#"};
+    vector<Lang> script_langs(langs.size());
 
-    auto it = lang_names.find("Python");
+    auto it = copy_if(langs.begin(), langs.end(), script_langs.begin(),
+                      [](const Lang& lang) {
+                    return lang.implementation == "Interpreted";
+               });
 
-    PrintRange(begin(lang_names), it);
-
-    /*
-    auto result = find_if(
-        begin(langs), end(langs),
-        [](const Lang& lang) {
-            return lang.name[0] == 'P';
-        }
-    );
-    
-    if (result == end(langs)) {
-        cout << "Not found!" << endl;
-    } else { 
-        cout << result->age << endl;
-    }
-    
-    string lang = langs[1].name;
-    auto it = lang.begin();
-    cout << *it;
-    ++it;
-    cout << *it;
-    */
+    PrintRange(langs.begin(), langs.end(), "All langs: ");
+    PrintRange(script_langs.begin(), it, "Script langs: ");
 
     return 0;
 }
