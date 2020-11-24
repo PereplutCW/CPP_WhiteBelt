@@ -1,5 +1,6 @@
 #include <iostream>
 #include <algorithm>
+#include <iterator>
 #include <vector>
 #include <set>
 #include <string>
@@ -35,15 +36,15 @@ int main() {
         {"JavaScript", "Interpreted"}
     };   
 
-    vector<Lang> script_langs(langs.size());
+    vector<Lang> script_langs;
 
-    auto it = copy_if(langs.begin(), langs.end(), script_langs.begin(),
+    auto it = copy_if(langs.begin(), langs.end(), back_inserter(script_langs),
                       [](const Lang& lang) {
                     return lang.implementation == "Interpreted";
                });
 
     PrintRange(langs.begin(), langs.end(), "All langs: ");
-    PrintRange(script_langs.begin(), it, "Script langs: ");
+    PrintRange(script_langs.begin(), script_langs.end(), "Script langs: ");
 
     return 0;
 }
