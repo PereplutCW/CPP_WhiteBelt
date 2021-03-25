@@ -36,15 +36,24 @@ int main() {
         {"JavaScript", "Interpreted"}
     };   
 
-    vector<Lang> script_langs;
+    vector<Lang> interpreted_langs;
+    vector<Lang> compiled_langs;
 
-    auto it = copy_if(langs.begin(), langs.end(), back_inserter(script_langs),
-                      [](const Lang& lang) {
-                    return lang.implementation == "Interpreted";
-               });
+    copy_if(begin(langs), end(langs), back_inserter(interpreted_langs),
+            [](const Lang& lang) {
+        return lang.implementation == "Interpreted";
+    });
 
-    PrintRange(langs.begin(), langs.end(), "All langs: ");
-    PrintRange(script_langs.begin(), script_langs.end(), "Script langs: ");
+    copy_if(begin(langs), end(langs), back_inserter(compiled_langs),
+            [](const Lang& lang) {
+        return lang.implementation == "Compiled";
+    });
+
+    PrintRange(begin(langs), end(langs), "All langs: ");
+    PrintRange(begin(interpreted_langs), end(interpreted_langs), "Interpreted langs: ");
+    PrintRange(begin(compiled_langs), end(compiled_langs), "Compiled langs: ");
+
+    cout << "MW" << 'V';
 
     return 0;
 }
