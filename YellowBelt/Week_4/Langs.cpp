@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <deque>
 #include <map>
 #include <algorithm>
 #include <iterator>
@@ -23,21 +24,16 @@ int main() {
         "Python",
         "Java",
         "C#"
-    };   
-
-    auto border = find(langs.begin(), langs.end(), "Python");
-    langs.erase(border, langs.end());
-    langs.insert(langs.end(), {"Python", "Java", "C#"});
-
-    vector<string> c_langs;
-    copy_if(langs.begin(), langs.end(), back_inserter(c_langs),
-           [](const string& lang) {
-               return lang[0] == 'C';
-           });
-
-    PrintRange(langs.begin(), langs.end());
-    cout << endl;
-    PrintRange(c_langs.begin(), c_langs.end());
+    };  
+    
+    int size;
+    cin >> size;
+    deque<int> d(size);
+    while(!d.empty()) {
+        d.pop_front();
+    }
+    cout << "Empty!" << endl;
+    
 
     return 0;
 }
