@@ -1,4 +1,4 @@
-#include <date.h>
+#include "date.h"
 
 Date::Date() noexcept : year(0), month(0), day(0) {}
 
@@ -34,7 +34,7 @@ string Date::DateToString() const {
     return ss.str();
 }
 
-Date ParseDate(istream& stream) {
+Date ParseDate(istream& is) {
     int year = 0;
     int month = 0;
     int day = 0;
@@ -42,36 +42,36 @@ Date ParseDate(istream& stream) {
     string date;
     string error_message = "Wrong date format: " + date;
 
-    stream >> date;
+    is >> date;
 
-    stringstream stream_date(date);
+    stringstream ss_date(date);
 
-    stream_date >> year;
-    if (stream_date.fail() || stream_date.peek() != '-') {
+    ss_date >> year;
+    if (ss_date.fail() || ss_date.peek() != '-') {
         throw runtime_error(error_message);
     }
-    stream_date.ignore();
+    ss_date.ignore();
 
-    stream_date >> month;
-    if (stream_date.fail() || stream_date.peek() != '-') {
+    ss_date >> month;
+    if (ss_date.fail() || ss_date.peek() != '-') {
         throw runtime_error(error_message);
     }
-    stream_date.ignore();
+    ss_date.ignore();
 
-    stream_date >> day;
-    if (stream_date.fail() || !stream_date.eof()) {
+    ss_date >> day;
+    if (ss_date.fail() || !ss_date.eof()) {
         throw runtime_error(error_message);
     }
 
     return Date(year, month, day);
 }
 
-ostream& operator<< (ostream& stream, const Date& date) {
-    stream << setw(4) << setfill('0') << date.GetYear() << '-'
+ostream& operator<< (ostream& os, const Date& date) {
+    os << setw(4) << setfill('0') << date.GetYear() << '-'
            << setw(2) << setfill('0') << date.GetMonth() << '-'
            << setw(2) << setfill('0') << date.GetDay();
     
-    return stream;
+    return os;
 }
 
 bool operator< (const Date& lhs, const Date& rhs) noexcept {
@@ -103,6 +103,3 @@ bool operator!= (const Date& lhs, const Date& rhs) noexcept {
     return make_tuple(lhs.GetYear(), lhs.GetMonth(), lhs.GetDay()) != 
            make_tuple(rhs.GetYear(), rhs.GetMonth(), rhs.GetDay());
 }
-
-//map<Date, pair<set<string>, vector<set<string>::iterator>>> db;
-
