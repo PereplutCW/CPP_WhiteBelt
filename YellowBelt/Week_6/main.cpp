@@ -1,7 +1,8 @@
-#include "database.h"
 #include "date.h"
-#include "condition_parser.h"
+#include "database.h"
 #include "node.h"
+#include "token.h"
+#include "condition_parser.h"
 #include "test_runner.h"
 
 #include <iostream>
@@ -10,7 +11,14 @@
 using namespace std;
 
 string ParseEvent(istream& is) {
-  // Реализуйте эту функцию
+    string event;
+    getline(is, event);
+
+    return string(find_if(event.begin(), event.end(), 
+                 [](const unsigned char& c) noexcept {
+                   return !isspace(c);
+                 }),
+                 event.end());
 }
 
 void TestAll();

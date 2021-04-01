@@ -24,9 +24,9 @@ private:
     int year;
     int month;
     int day;
-}
+};
 
-Date ParseDate(istream& stream);
+Date ParseDate(istream& is);
 
 ostream& operator<< (ostream& os, const Date& date);
 
@@ -37,4 +37,4 @@ bool operator>= (const Date& lhs, const Date& rhs) noexcept;
 bool operator== (const Date& lhs, const Date& rhs) noexcept;
 bool operator!= (const Date& lhs, const Date& rhs) noexcept;
 
-#endif;
+#endif
