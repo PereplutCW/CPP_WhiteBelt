@@ -20,4 +20,3 @@ struct Token {
 };
 
 vector<Token> Tokenize(istream& cl);
-
