@@ -1,8 +1,7 @@
-#include "date.h"
 #include "database.h"
-#include "node.h"
-#include "token.h"
+#include "date.h"
 #include "condition_parser.h"
+#include "node.h"
 #include "test_runner.h"
 
 #include <iostream>
@@ -11,14 +10,7 @@
 using namespace std;
 
 string ParseEvent(istream& is) {
-    string event;
-    getline(is, event);
-
-    return string(find_if(event.begin(), event.end(), 
-                 [](const unsigned char& c) noexcept {
-                   return !isspace(c);
-                 }),
-                 event.end());
+  // Реализуйте эту функцию
 }
 
 void TestAll();
@@ -96,4 +88,3 @@ void TestAll() {
   tr.RunTest(TestParseEvent, "TestParseEvent");
   tr.RunTest(TestParseCondition, "TestParseCondition");
 }
-//
