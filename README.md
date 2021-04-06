@@ -1,9 +1,9 @@
 # The Art of Modern C++ Development
-My solutions to problems from the Coursera specialization "The Art of Modern C++ Development" by Yandex and MIPT
+My solutions to assignments from the Coursera specialization "The Art of Modern C++ Development" by Yandex and MIPT
 
 ![Specialization Logo](https://github.com/PereplutCW/ModernCPP/blob/master/WhiteBelt/img.jpg)
 
-| Title | [The Art of Modern C++ Development Coursera Specialization](https://www.coursera.org/specializations/c-plus-plus-modern-development?)|
+| Title | Coursera specialization [The Art of Modern C++ Development](https://www.coursera.org/specializations/c-plus-plus-modern-development?)|
 | :---- | :----------- |
 | Level | Intermediate |
 | Language | Russian |
